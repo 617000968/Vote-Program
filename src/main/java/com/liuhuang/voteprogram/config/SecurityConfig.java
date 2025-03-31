@@ -30,8 +30,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/polls/**").permitAll()
+                        .requestMatchers("/api/options/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/polls/**").permitAll() // 允许访问 createPoll 接口
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

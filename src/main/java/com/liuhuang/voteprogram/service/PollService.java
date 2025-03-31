@@ -1,7 +1,8 @@
 package com.liuhuang.voteprogram.service;
 
 
-import com.liuhuang.voteprogram.dto.PollCreateDTO;
+import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
+import com.liuhuang.voteprogram.dto.PollResponseDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.model.Polls;
@@ -30,24 +31,71 @@ public class PollService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Polls getPollById(Long id) {
-        return pollRepository.findById(id).orElse(null);
-    }
 
     @Transactional
-    public Polls createPoll(PollCreateDTO dto) {
+    public PollCreateAndUpdateDTO createPoll(PollCreateAndUpdateDTO dto) {
         Optional<Polls> existPoll = pollRepository.findByActiveTitle(dto.getTitle());
         if (existPoll.isPresent() && !existPoll.get().isDeleted()) {
             throw new ValidationException("投票已存在");
         }
-        return createAndSavePoll(dto);
+        SavePoll(dto);
+        return dto;
     }
 
-    private Polls createAndSavePoll(PollCreateDTO dto) {
+
+
+    public List<PollResponseDTO> getActivePolls() {
+        return pollRepository.findActivePolls();
+    }
+
+    public List<PollResponseDTO> getUserPolls(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ValidationException("用户不存在"));
+        return pollRepository.findPollsByCreator(user);
+    }
+    public List<PollResponseDTO> getAllPolls(){
+        return pollRepository.findAllPolls();
+    }
+
+
+    public List<PollResponseDTO> getCategoryPolls(int categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ValidationException("分类不存在"));
+        List<PollResponseDTO> categoryPolls = pollRepository.findByCategory(category);
+        if (categoryPolls.isEmpty()) {
+            throw new ValidationException("分类下没有投票");
+        }
+        return categoryPolls;
+    }
+
+    @Transactional
+    public PollCreateAndUpdateDTO updatePolls(Long pollId, PollCreateAndUpdateDTO dto/*, String name **/) {
+        Polls polls = pollRepository.findById(pollId).orElseThrow(() -> new ValidationException("投票不存在"));
+        if (polls.getTitle().equals(dto.getTitle())) {
+            if (pollRepository.existsByTitleAndExcludeId(dto.getTitle(), pollId)){
+                throw new ValidationException("投票标题已存在");
+            }
+        }
+        polls.setTitle(dto.getTitle());
+        polls.setDescription(dto.getDescription());
+        polls.setStartTime(dto.getStartTime());
+        polls.setEndTime(dto.getEndTime());
+        polls.setMaxChoice(dto.getMaxChoice());
+        polls.setAnonymous(dto.getIsAnonymous());
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ValidationException("分类不存在"));
+        polls.setCategory(category);
+        polls.setUpdateAt(LocalDateTime.now());
+        pollRepository.save(polls);
+        return dto;
+
+    }
+
+
+
+    private void SavePoll(PollCreateAndUpdateDTO dto) {
         Polls poll = new Polls();
         User user = userRepository.findById(dto.getCreator_id())
                 .orElseThrow(() -> new ValidationException("用户不存在"));
-        Category category = categoryRepository.findById(dto.getCategory_id())
+        Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ValidationException("分类不存在"));
         poll.setTitle(dto.getTitle());
         poll.setDescription(dto.getDescription());
@@ -57,12 +105,21 @@ public class PollService {
         poll.setMaxChoice(dto.getMaxChoice());
         poll.setCreatedAt(LocalDateTime.now());
         poll.setCategory(category);
-
-        return pollRepository.save(poll);
+        poll.setAnonymous(dto.getIsAnonymous());
+        pollRepository.save(poll);
     }
 
-    public List<Polls> getActivePolls() {
-        return pollRepository.findActivePolls();
+    @Transactional
+    public void deletePoll(Long pollId) {
+        Polls polls= pollRepository.findById(pollId).orElseThrow(() -> new ValidationException("投票不存在"));
+        if (polls.isDeleted()) {
+            throw new ValidationException("投票已删除");
+        }
+        polls.setDeleted(true);
+        polls.setUpdateAt(LocalDateTime.now());
+        pollRepository.save(polls);
     }
+
+
 
 }

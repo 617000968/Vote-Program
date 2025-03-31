@@ -7,7 +7,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -41,15 +44,23 @@ public class Polls {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(nullable = false, name = "update_at")
+    @UpdateTimestamp
+    private LocalDateTime updateAt;
+
     @Column(nullable = false, name = "is_anonymous")
     private boolean isAnonymous;
 
-    @ManyToOne
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
+    @JsonBackReference("poll-options")
+    private List<Options> options;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonManagedReference("poll-category")
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
     private Category category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonManagedReference("poll-creator")
     @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
     private User creator;

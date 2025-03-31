@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
-public class PollCreateDTO {
+public class PollCreateAndUpdateDTO {
 
     @NotBlank(message = "投票标题不能为空")
     @Size(min = 5, max = 255, message = "投票标题长度为5-255位")
@@ -31,9 +31,11 @@ public class PollCreateDTO {
     private LocalDateTime startTime;
 
     @NotBlank(message = "分类不能为空")
-    private int category_id;
+    private int categoryId;
 
     @NotBlank(message = "最大选项不能为空")
     private int maxChoice;
 
+    @NotBlank(message = "是否匿名不能为空")
+    private Boolean isAnonymous;
 }
