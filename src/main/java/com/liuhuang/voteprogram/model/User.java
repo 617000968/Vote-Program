@@ -51,4 +51,12 @@ public class User {
     @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
     @JsonBackReference("poll-creator")
     private List<Polls> polls;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference("vote-user")
+    private List<Votes> vote;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonManagedReference("log-user")
+    private List<Logs> log;
 }

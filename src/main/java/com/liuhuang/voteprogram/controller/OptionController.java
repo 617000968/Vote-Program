@@ -34,7 +34,17 @@ public class OptionController {
             return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
         }
     }
-
+    @DeleteMapping("/delete/{optionId}")
+    public ApiResponse<?> deleteOption(@PathVariable Long optionId) {
+        try{
+            optionService.deleteOption(optionId);
+            return ApiResponse.success("删除成功", null);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
     @PatchMapping("/update/{optionId}")
     public ApiResponse<OptionResponseDTO> updateOption(@PathVariable Long optionId,
                                                        @RequestBody OptionResponseDTO dto) {
@@ -44,18 +54,6 @@ public class OptionController {
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());
         } catch (Exception e){
-            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
-        }
-    }
-
-    @DeleteMapping("/delete/{optionId}")
-    public ApiResponse<?> deleteOption(@PathVariable Long optionId) {
-        try{
-            optionService.deleteOption(optionId);
-            return ApiResponse.success("删除成功", null);
-        } catch (ValidationException e) {
-            return ApiResponse.error(400, e.getMessage());
-        } catch (Exception e) {
             return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
         }
     }

@@ -49,7 +49,8 @@ public class PollService {
     }
 
     public List<PollResponseDTO> getUserPolls(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ValidationException("用户不存在"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ValidationException("用户不存在"));
         return pollRepository.findPollsByCreator(user);
     }
     public List<PollResponseDTO> getAllPolls(){
@@ -58,7 +59,8 @@ public class PollService {
 
 
     public List<PollResponseDTO> getCategoryPolls(int categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ValidationException("分类不存在"));
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ValidationException("分类不存在"));
         List<PollResponseDTO> categoryPolls = pollRepository.findByCategory(category);
         if (categoryPolls.isEmpty()) {
             throw new ValidationException("分类下没有投票");
@@ -66,9 +68,18 @@ public class PollService {
         return categoryPolls;
     }
 
+//    public PollWithOptionsDTO getPollWithOptions(Long pollId) {
+//        List<PollWithOptionsDTO> pollWithOptions = pollRepository.findPollWithOptionsByPollId(pollId);
+//        if (pollWithOptions.isEmpty()) {
+//            throw new ValidationException("投票不存在");
+//        }
+//        return pollWithOptions.get(0);
+//    }
+
     @Transactional
     public PollCreateAndUpdateDTO updatePolls(Long pollId, PollCreateAndUpdateDTO dto/*, String name **/) {
-        Polls polls = pollRepository.findById(pollId).orElseThrow(() -> new ValidationException("投票不存在"));
+        Polls polls = pollRepository.findById(pollId)
+                .orElseThrow(() -> new ValidationException("投票不存在"));
         if (polls.getTitle().equals(dto.getTitle())) {
             if (pollRepository.existsByTitleAndExcludeId(dto.getTitle(), pollId)){
                 throw new ValidationException("投票标题已存在");
@@ -120,6 +131,7 @@ public class PollService {
         pollRepository.save(polls);
     }
 
-
-
+//    public PollWithOptionsDTO getPollWithOptions(Long pollId) {
+//        return (PollWithOptionsDTO) pollRepository.findPollWithOptionsByPollId(pollId);
+//    }
 }

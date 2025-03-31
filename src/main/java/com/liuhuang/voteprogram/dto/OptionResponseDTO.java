@@ -7,4 +7,9 @@ import lombok.Data;
 public class OptionResponseDTO {
     private Long pollId;
     private String optionText;
+
+    public OptionResponseDTO(Long pollId, String optionText) {
+        this.pollId = pollId;
+        this.optionText = optionText;
+    }
 }

@@ -52,8 +52,20 @@ public class Polls {
     private boolean isAnonymous;
 
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
-    @JsonBackReference("poll-options")
+    @JsonBackReference("option-poll")
     private List<Options> options;
+
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
+    @JsonBackReference("vote-poll")
+    private List<Votes> votes;
+
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
+    @JsonManagedReference("anonymousVote-poll")
+    private List<AnonymousVote> anonymousVote;
+
+    @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
+    @JsonManagedReference("log-poll")
+    private List<Logs> log;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonManagedReference("poll-category")
@@ -64,4 +76,5 @@ public class Polls {
     @JsonManagedReference("poll-creator")
     @JoinColumn(name = "creator_id", referencedColumnName = "user_id")
     private User creator;
+
 }

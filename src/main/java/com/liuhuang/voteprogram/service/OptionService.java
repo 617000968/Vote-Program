@@ -30,7 +30,6 @@ public class OptionService {
                 .orElseThrow(() -> new ValidationException("投票不存在"));
         options.setOptionText(dto.getOptionText());
         options.setPoll(polls);
-        options.setVoteCount(0L);
         optionRepository.save(options);
         return dto;
     }
@@ -68,10 +67,7 @@ public class OptionService {
     public List<OptionResponseDTO> getPollOptions(Long pollId) {
         Polls polls = pollRepository.findById(pollId)
                 .orElseThrow(() -> new ValidationException("投票不存在"));
-        if (polls == null) {
-            throw new ValidationException("投票不存在");
-        }
-        List<OptionResponseDTO> optionResponseDTOS = optionRepository.findPollsOptions(polls);
+        List<OptionResponseDTO> optionResponseDTOS = optionRepository.findByPoll(polls);
         if (optionResponseDTOS.isEmpty()) {
             throw new ValidationException("投票下不存在选项");
         }

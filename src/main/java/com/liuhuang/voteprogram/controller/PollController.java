@@ -3,14 +3,12 @@ package com.liuhuang.voteprogram.controller;
 
 import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
 import com.liuhuang.voteprogram.dto.PollResponseDTO;
-import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.response.ApiResponse;
 import com.liuhuang.voteprogram.service.PollService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.List;
 
 @RestController
@@ -49,6 +47,11 @@ public class PollController {
         return ApiResponse.success("获取所有投票成功", allPolls);
     }
 
+//    @GetMapping("/{pollId}")
+//    public ApiResponse<PollWithOptionsDTO> getPollWithOptions(@PathVariable Long pollId) {
+//        PollWithOptionsDTO pollWithOptions = pollService.getPollWithOptions(pollId);
+//        return ApiResponse.success("获取投票成功", pollWithOptions);
+//    }
 
     @GetMapping("/user/{userId}")
     public ApiResponse<List<PollResponseDTO>> getUserPolls(@PathVariable Long userId) {

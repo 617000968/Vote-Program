@@ -4,7 +4,6 @@ package com.liuhuang.voteprogram.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,6 @@ public class Category {
 
     @Column(nullable = false, unique = true)
     private String name;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "category")

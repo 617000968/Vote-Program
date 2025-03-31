@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Table(name = "options")
@@ -24,9 +25,6 @@ public class Options {
     @Size(max = 255)
     private String optionText;
 
-    @Column(name = "vote_count")
-    private Long voteCount;
-
     @Column(nullable = false, name = "created_at")
     @CreationTimestamp
     private LocalDateTime createAt;
@@ -35,4 +33,12 @@ public class Options {
     @JsonManagedReference("option-poll")
     @JoinColumn(name = "poll_id", referencedColumnName = "poll_id")
     private Polls poll;
+
+    @OneToMany(mappedBy = "option", fetch = FetchType.LAZY)
+    @JsonManagedReference("vote-option")
+    private List<Votes> vote;
+
+    @OneToMany(mappedBy = "option", fetch = FetchType.LAZY)
+    @JsonManagedReference("anonymousVote-option")
+    private List<AnonymousVote> anonymousVote;
 }

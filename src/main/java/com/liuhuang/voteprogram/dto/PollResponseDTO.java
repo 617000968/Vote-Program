@@ -32,7 +32,7 @@ public class PollResponseDTO {
         this.createdAt = createdAt;
         // 字段赋值
         this.categoryDTO = new CategoryDTO( category.getName());
-        this.userBasicDTO = new UserBasicDTO(creator.getUserId(), creator.getUsername(), creator.getNickname());
+        this.userBasicDTO = new UserBasicDTO(creator.getUsername(), creator.getNickname());
     }
 }
 

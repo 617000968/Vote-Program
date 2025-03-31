@@ -1,13 +1,11 @@
 package com.liuhuang.voteprogram.repository;
 
-import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
 import com.liuhuang.voteprogram.dto.PollResponseDTO;
 import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,25 +37,51 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
     List<PollResponseDTO> findAllPolls();
 
 
-    @Query("SELECT COUNT(p) > 0 FROM Polls p WHERE p.title = :title AND p.isDeleted = false AND p.pollId <> :pollId")
+    @Query("SELECT COUNT(p) > 0 " +
+            "FROM Polls p " +
+            "WHERE p.title = :title AND p.isDeleted = false AND p.pollId <> :pollId")
     boolean existsByTitleAndExcludeId(String title, Long pollId);
 
 
 
+    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
+            "p.pollId, p.title, p.description, p.startTime, p.endTime," +
+            "p.maxChoice, p.createdAt, c, u)" +
+            "FROM Polls p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.creator u " +
+            "WHERE p.isDeleted = false AND p.creator = :creator")
     List<PollResponseDTO> findPollsByCreator(User creator);
 
+
+    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
+            "p.pollId, p.title, p.description, p.startTime, p.endTime," +
+            "p.maxChoice, p.createdAt, c, u)" +
+            "FROM Polls p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.creator u " +
+            "WHERE p.isDeleted = false AND p.category = :category")
     List<PollResponseDTO> findByCategory(Category category);
 
-//    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollUpdateDTO(" +
-//            "p.title, p.description, p.startTime, p.endTime," +
-//            "p.maxChoice, c, u)" +
-//            "FROM Polls p" +
-//            "LEFT JOIN p.category c" +
+
+    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
+            "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
+            "p.maxChoice, p.createdAt, c, u ) " +
+            "FROM Polls p " +
+            "LEFT JOIN p.category c " +
+            "LEFT JOIN p.creator u " +
+            "WHERE p.isDeleted = false AND p.pollId = :pollId")
+    PollResponseDTO findPollBasicInfoByPollId(Long pollId);
+
+//    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollWithOptionsDTO(" +
+//            "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
+//            "p.maxChoice, p.createdAt, c, u, o ) " +
+//            "FROM Polls p " +
+//            "LEFT JOIN p.category c " +
 //            "LEFT JOIN p.creator u" +
-//            "WHERE p.pollId = :pollId AND p.isDeleted = false")
-//    Optional<PollCreateAndUpdateDTO> findPollById(@Param("pollId") Long pollId);
-//
-//
-//    @Query("SELECT p FROM Polls p LEFT JOIN FETCH p.category LEFT JOIN FETCH p.creator WHERE p.pollId = :pollId")
-//    Optional<Polls> findPollWithAssociations(@Param("pollId") Long pollId);
+//            "LEFT JOIN p.options o " +
+//            "WHERE p.pollId = :pollId")
+//    List<PollWithOptionsDTO> findPollWithOptionsByPollId(Long pollId);
+
+
 }
