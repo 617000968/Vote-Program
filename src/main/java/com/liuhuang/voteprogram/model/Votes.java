@@ -19,7 +19,7 @@ public class Votes {
     @Column(name = "vote_id")
     private Long voteId;
 
-    @Column(nullable = false, name = "vote_time")
+    @Column(nullable = false, name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 

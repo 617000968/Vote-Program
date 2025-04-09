@@ -73,4 +73,9 @@ public class OptionService {
         }
         return optionResponseDTOS;
     }
+
+    public Options getOptionById(Long optionId) {
+        return optionRepository.findById(optionId)
+                .orElseThrow(() -> new ValidationException("选项不存在"));
+    }
 }

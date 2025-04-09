@@ -18,4 +18,12 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
             "c.name)" +
             "FROM Category c")
     List<CategoryDTO> getAllCategory();
+
+    @Query("SELECT new com.liuhuang.voteprogram.dto.CategoryDTO(" +
+            "c.name)" +
+            "FROM Category c " +
+            "WHERE c.active = true")
+    List<CategoryDTO> getActiveCategory();
+
+
 }

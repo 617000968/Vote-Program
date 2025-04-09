@@ -1,6 +1,8 @@
 package com.liuhuang.voteprogram.service;
 
+import com.liuhuang.voteprogram.dto.UserLoginDTO;
 import com.liuhuang.voteprogram.dto.UserRegisterDTO;
+import com.liuhuang.voteprogram.dto.UserResponseDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.model.User;
 import com.liuhuang.voteprogram.repository.UserRepository;
@@ -19,6 +21,15 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional(readOnly = true)
+    public User login(UserLoginDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new ValidationException("用户名或密码错误"));
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new ValidationException("用户名或密码错误");
+        }
+        return user;
     }
 
     public User register(UserRegisterDTO dto) {
@@ -42,15 +53,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
-    public User login(UserRegisterDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new ValidationException("用户名或密码错误"));
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new ValidationException("用户名或密码错误");
-        }
-        return user;
-    }
-
     public User update(@Min(1) Long id, UserRegisterDTO dto) {
         User user = userRepository.findById(id).orElseThrow(() -> new ValidationException("用户不存在"));
         if (isValidPassword(dto.getPassword())) {
@@ -69,6 +71,17 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserResponseDTO toDTO(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setUserId(user.getUserId());
+        dto.setUsername(user.getUsername());
+        dto.setNickname(user.getNickname());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+        dto.setDeleted(user.isDeleted());
+        return dto;
+    }
+
 
     // 用户名格式验证
     private boolean isValidUsername(String username) {
@@ -80,4 +93,8 @@ public class UserService {
         return !password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]{6,18}$");
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ValidationException("用户不存在"));
+    }
 }

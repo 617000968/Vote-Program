@@ -131,6 +131,11 @@ public class PollService {
         pollRepository.save(polls);
     }
 
+    public Polls getPollsByPollId(Long pollId) {
+        return pollRepository.findById(pollId)
+                .orElseThrow(() -> new ValidationException("投票不存在"));
+    }
+
 //    public PollWithOptionsDTO getPollWithOptions(Long pollId) {
 //        return (PollWithOptionsDTO) pollRepository.findPollWithOptionsByPollId(pollId);
 //    }

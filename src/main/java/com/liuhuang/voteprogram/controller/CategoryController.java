@@ -32,10 +32,39 @@ public class CategoryController {
             return ApiResponse.error(400, "服务器内部错误:" + e.getMessage());
         }
     }
-
     @GetMapping("/all")
     public ApiResponse<List<CategoryDTO>> getAllCategory(){
         List<CategoryDTO> categories = categoryService.getAllCategory();
         return ApiResponse.success("获取所有分类成功", categories);
+    }
+
+    @GetMapping("/active")
+    private ApiResponse<List<CategoryDTO>> getActiveCategory(){
+        List<CategoryDTO> categories = categoryService.getActiveCategory();
+        return ApiResponse.success("获取所有分类成功", categories);
+    }
+
+    @DeleteMapping("/delete/{categoryId}")
+    public ApiResponse<?> deleteCategory(@PathVariable int categoryId) {
+        try {
+            categoryService.deleteCategory(categoryId);
+            return ApiResponse.success("删除成功", null);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error(400, "服务器内部错误:" + e.getMessage());
+        }
+    }
+
+    @PutMapping("/status/{id}")
+    public ApiResponse<?> updateCategoryStatus(@PathVariable int id) {
+        try {
+            categoryService.updateCategoryStatus(id);
+            return ApiResponse.success("更新成功", null);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error(400, "服务器内部错误:" + e.getMessage());
+        }
     }
 }

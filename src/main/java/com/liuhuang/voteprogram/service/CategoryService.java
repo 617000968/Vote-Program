@@ -28,4 +28,18 @@ public class CategoryService {
     public List<CategoryDTO> getAllCategory() {
         return categoryRepository.getAllCategory();
     }
+
+    public List<CategoryDTO> getActiveCategory() {
+        return categoryRepository.getActiveCategory();
+    }
+
+    public void deleteCategory(int categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
+
+    public void updateCategoryStatus(int id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ValidationException("分类不存在"));
+        category.setActive(!category.isActive());
+        categoryRepository.save(category);
+    }
 }

@@ -24,6 +24,9 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     @JsonBackReference("poll-category")
