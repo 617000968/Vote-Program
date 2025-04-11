@@ -1,7 +1,6 @@
 package com.liuhuang.voteprogram.repository;
 
 import com.liuhuang.voteprogram.dto.OptionResponseDTO;
-import com.liuhuang.voteprogram.dto.OptionWithPollDTO;
 import com.liuhuang.voteprogram.model.Options;
 import com.liuhuang.voteprogram.model.Polls;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,12 +24,12 @@ public interface OptionRepository extends JpaRepository<Options, Long> {
             "WHERE o.poll = :poll")
     List<OptionResponseDTO> findByPoll(@Param("poll") Polls poll);
 
-    @Query(value = "SELECT o.option_id, o.option_text, COUNT(v.vote_id) AS vote_count " +
-            "FROM options o " +
-            "LEFT JOIN votes v ON o.option_id = v.option_id " +
-            "WHERE o.poll_id = :pollId " +
-            "GROUP BY o.option_id, o.option_text", nativeQuery = true)
-    List<Object[]> findOptionsWithVoteCountByPollId(@Param("pollId") Long pollId);
 
-
+//    @Query("SELECT new com.liuhuang.voteprogram.dto.OptionWithPollWithVoteDTO( " +
+//            "o.optionId, o.optionText, COUNT(v)) " +
+//            "FROM Options o " +
+//            "LEFT JOIN o.vote v " +
+//            "WHERE o.poll = :poll " +
+//            "GROUP BY o.optionId")
+//    List<OptionWithPollWithVoteDTO> getOptionWithPollWithVoteDTOListByPoll(Polls poll);
 }

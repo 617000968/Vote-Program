@@ -7,6 +7,7 @@ import com.liuhuang.voteprogram.model.Options;
 import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.repository.OptionRepository;
 import com.liuhuang.voteprogram.repository.PollRepository;
+import com.liuhuang.voteprogram.repository.VoteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +17,12 @@ public class OptionService {
 
     private final OptionRepository optionRepository;
     private final PollRepository pollRepository;
+    private final VoteRepository voteRepository;
 
-    public OptionService(OptionRepository optionRepository, PollRepository pollRepository) {
+    public OptionService(OptionRepository optionRepository, PollRepository pollRepository, VoteRepository voteRepository) {
         this.optionRepository = optionRepository;
         this.pollRepository = pollRepository;
+        this.voteRepository = voteRepository;
     }
 
 
@@ -28,6 +31,9 @@ public class OptionService {
         Options options = new Options();
         Polls polls = pollRepository.findById(dto.getPollId())
                 .orElseThrow(() -> new ValidationException("投票不存在"));
+        if (voteRepository.existsByPoll(polls)) {
+            throw new ValidationException("投票已经投票,无法修改");
+        }
         options.setOptionText(dto.getOptionText());
         options.setPoll(polls);
         optionRepository.save(options);
@@ -49,6 +55,11 @@ public class OptionService {
         existPoll(dto);
         Options options = optionRepository.findById(optionId)
                 .orElseThrow(() -> new ValidationException("选项不存在"));
+        Polls polls = pollRepository.findById(dto.getPollId())
+                .orElseThrow(() -> new ValidationException("投票不存在"));
+        if (voteRepository.existsByPoll(polls)) {
+            throw new ValidationException("投票已经投票,无法修改");
+        }
         options.setOptionText(dto.getOptionText());
         optionRepository.save(options);
         return dto;
@@ -58,6 +69,7 @@ public class OptionService {
         if (!optionRepository.existsById(optionId)) {
             throw new ValidationException("选项不存在");
         }
+
         optionRepository.deleteById(optionId);
         optionRepository.flush();
         pollRepository.flush();

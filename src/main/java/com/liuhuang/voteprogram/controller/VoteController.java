@@ -1,7 +1,7 @@
 package com.liuhuang.voteprogram.controller;
 
 
-import com.liuhuang.voteprogram.dto.VoteCountResponse;
+import com.liuhuang.voteprogram.dto.VoteCountResponseDTO;
 import com.liuhuang.voteprogram.dto.VoteCreateDTO;
 import com.liuhuang.voteprogram.dto.VoteResponseDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
@@ -26,9 +26,9 @@ public class VoteController {
 
 
     @PostMapping("/create")
-    public ApiResponse<VoteResponseDTO> createVote(@RequestBody @Valid VoteCreateDTO dto) {
+    public ApiResponse<List<VoteResponseDTO>> createVote(@RequestBody @Valid VoteCreateDTO dto) {
         try {
-            VoteResponseDTO vote = voteService.createVote(dto);
+            List<VoteResponseDTO> vote = voteService.createVote(dto);
             return ApiResponse.success("投票成功", vote);
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());
@@ -38,9 +38,9 @@ public class VoteController {
     }
 
     @GetMapping("/{pollId}")
-    public ApiResponse<List<VoteCountResponse>> getVoteCountByPollId(@PathVariable Long pollId) {
+    public ApiResponse<List<VoteCountResponseDTO>> getVoteCountByPollId(@PathVariable Long pollId) {
         try {
-            List<VoteCountResponse> voteCount = voteService.getVoteCountByPollId(pollId);
+            List<VoteCountResponseDTO> voteCount = voteService.getVoteCountByPollId(pollId);
             return ApiResponse.success("获取投票数成功", voteCount);
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());

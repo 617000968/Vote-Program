@@ -1,8 +1,7 @@
 package com.liuhuang.voteprogram.service;
 
 
-import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
-import com.liuhuang.voteprogram.dto.PollResponseDTO;
+import com.liuhuang.voteprogram.dto.*;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.model.Polls;
@@ -10,6 +9,7 @@ import com.liuhuang.voteprogram.model.User;
 import com.liuhuang.voteprogram.repository.CategoryRepository;
 import com.liuhuang.voteprogram.repository.PollRepository;
 import com.liuhuang.voteprogram.repository.UserRepository;
+import com.liuhuang.voteprogram.repository.VoteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +24,13 @@ public class PollService {
     private final PollRepository pollRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final VoteRepository voteRepository;
 
-    public PollService(PollRepository pollRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
+    public PollService(PollRepository pollRepository, UserRepository userRepository, CategoryRepository categoryRepository, VoteRepository voteRepository) {
         this.pollRepository = pollRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.voteRepository = voteRepository;
     }
 
 
@@ -85,6 +87,9 @@ public class PollService {
                 throw new ValidationException("投票标题已存在");
             }
         }
+        if (voteRepository.existsByPoll(polls)) {
+            throw new ValidationException("投票已投票，不能修改");
+        }
         polls.setTitle(dto.getTitle());
         polls.setDescription(dto.getDescription());
         polls.setStartTime(dto.getStartTime());
@@ -136,7 +141,27 @@ public class PollService {
                 .orElseThrow(() -> new ValidationException("投票不存在"));
     }
 
-//    public PollWithOptionsDTO getPollWithOptions(Long pollId) {
-//        return (PollWithOptionsDTO) pollRepository.findPollWithOptionsByPollId(pollId);
-//    }
+
+    public PollWithOptionWithVoteDTO getDetailedPoll(Long pollId) {
+        Polls polls = pollRepository.findById(pollId)
+                .orElseThrow(() -> new ValidationException("投票不存在"));
+        List<VoteCountResponseDTO> voteCountResponseDTO = voteRepository.getVoteCountByPoll(polls);
+        UserBasicDTO userBasicDTO = new UserBasicDTO(
+                polls.getCreator().getUsername(),
+                polls.getCreator().getNickname()
+        );
+        CategoryDTO categoryDTO = new CategoryDTO(polls.getCategory().getName());
+        return new PollWithOptionWithVoteDTO(
+                polls.getPollId(),
+                polls.getTitle(),
+                polls.getDescription(),
+                polls.getStartTime(),
+                polls.getEndTime(),
+                polls.getMaxChoice(),
+                polls.getCreatedAt(),
+                categoryDTO,
+                userBasicDTO,
+                voteCountResponseDTO
+        );
+    }
 }

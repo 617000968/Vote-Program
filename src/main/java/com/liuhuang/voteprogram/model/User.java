@@ -48,7 +48,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updateTime;
 
-    @OneToMany(mappedBy = "creator", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     @JsonBackReference("poll-creator")
     private List<Polls> polls;
 

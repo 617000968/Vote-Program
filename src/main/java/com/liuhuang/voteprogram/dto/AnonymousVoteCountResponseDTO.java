@@ -4,14 +4,14 @@ package com.liuhuang.voteprogram.dto;
 import lombok.Data;
 
 @Data
-public class OptionWithPollDTO {
+public class AnonymousVoteCountResponseDTO {
+    private Long count;
     private Long optionId;
     private String optionText;
-    private Long voteCount;
 
-    public OptionWithPollDTO(Long optionId, String optionText, Long voteCount) {
+    public AnonymousVoteCountResponseDTO(Long count, Long optionId, String optionText) {
+        this.count = count;
         this.optionId = optionId;
         this.optionText = optionText;
-        this.voteCount = voteCount;
     }
 }

@@ -3,6 +3,7 @@ package com.liuhuang.voteprogram.controller;
 
 import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
 import com.liuhuang.voteprogram.dto.PollResponseDTO;
+import com.liuhuang.voteprogram.dto.PollWithOptionWithVoteDTO;
 import com.liuhuang.voteprogram.response.ApiResponse;
 import com.liuhuang.voteprogram.service.PollService;
 import org.springframework.validation.annotation.Validated;
@@ -63,6 +64,12 @@ public class PollController {
     public ApiResponse<List<PollResponseDTO>> getCategoryPolls(@PathVariable int categoryId) {
         List<PollResponseDTO> categoryPolls = pollService.getCategoryPolls(categoryId);
         return ApiResponse.success("获取分类投票成功", categoryPolls);
+    }
+
+    @GetMapping("/detailed/{pollId}")
+    public ApiResponse<PollWithOptionWithVoteDTO> getDetailedPoll(@PathVariable Long pollId) {
+        PollWithOptionWithVoteDTO detailedPoll = pollService.getDetailedPoll(pollId);
+        return ApiResponse.success("获取详细投票成功", detailedPoll);
     }
 
     @PatchMapping("/update/{pollId}")

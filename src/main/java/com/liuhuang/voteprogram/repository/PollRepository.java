@@ -6,6 +6,7 @@ import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +27,14 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
             "WHERE p.isDeleted = false AND CURRENT_TIMESTAMP BETWEEN p.startTime AND p.endTime")
     List<PollResponseDTO> findActivePolls();
 
+    @Query("SELECT CASE WHEN COUNT(p) > 0 " +
+            "THEN true " +
+            "ELSE false END " +
+            "FROM Polls p " +
+            "WHERE p.pollId = :pollId " +
+            "AND p.isDeleted = false " +
+            "AND CURRENT_TIMESTAMP BETWEEN p.startTime AND p.endTime ")
+    boolean existsActivePoll(@Param("pollId") Long pollId);
 
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime, " +

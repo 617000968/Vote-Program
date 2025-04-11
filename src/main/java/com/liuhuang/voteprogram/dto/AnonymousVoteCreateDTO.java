@@ -6,9 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class VoteCreateDTO {
-
+public class AnonymousVoteCreateDTO {
     private Long pollId;
-    private Long userId;
     private List<Long> optionId;
 }
