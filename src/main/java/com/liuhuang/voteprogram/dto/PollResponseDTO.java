@@ -5,7 +5,6 @@ import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.model.User;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

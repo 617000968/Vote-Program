@@ -35,7 +35,7 @@ public class AuthController {
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());
         } catch (Exception e){
-            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+            return ApiResponse.error(500, "服务器内部错误" + e.getMessage());
         }
     }
 

@@ -21,12 +21,14 @@ public class AnonymousVoteService {
     private final AnonymousVoteRepository anonymousVoteRepository;
     private final PollRepository pollRepository;
     private final OptionRepository optionRepository;
+    private final PollService pollService;
 
     public AnonymousVoteService(AnonymousVoteRepository anonymousVoteRepository,
-                                PollRepository pollRepository, OptionRepository optionRepository) {
+                                PollRepository pollRepository, OptionRepository optionRepository, PollService pollService) {
         this.anonymousVoteRepository = anonymousVoteRepository;
         this.pollRepository = pollRepository;
         this.optionRepository = optionRepository;
+        this.pollService = pollService;
     }
 
 
@@ -70,4 +72,8 @@ public class AnonymousVoteService {
     }
 
 
+    public List<AnonymousVoteCountResponseDTO> getAnonymousVoteCountByPollId(Long pollId) {
+        Polls polls = pollService.getPollsByPollId(pollId);
+        return anonymousVoteRepository.getAnonymousVoteCountByPoll(polls);
+    }
 }

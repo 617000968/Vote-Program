@@ -17,4 +17,10 @@ public interface AnonymousVoteRepository extends JpaRepository<AnonymousVote, Lo
 
 
 
+    @Query("SELECT new com.liuhuang.voteprogram.dto.AnonymousVoteCountResponseDTO(" +
+            "COUNT(a), o.optionId, o.optionText) " +
+            "FROM Options o LEFT JOIN o.anonymousVote a " +
+            "WHERE o.poll = :polls " +
+            "GROUP BY o.optionId, o.optionId ")
+    List<AnonymousVoteCountResponseDTO> getAnonymousVoteCountByPoll(Polls polls);
 }

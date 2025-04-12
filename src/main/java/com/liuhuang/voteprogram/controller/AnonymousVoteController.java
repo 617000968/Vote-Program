@@ -37,4 +37,17 @@ public class AnonymousVoteController {
         }
     }
 
+    @GetMapping("/{pollId}")
+    public ApiResponse<List<AnonymousVoteCountResponseDTO>> getAnonymousVoteCountByPollId(
+            @PathVariable Long pollId) {
+        try {
+            List<AnonymousVoteCountResponseDTO> anonymousVoteCountResponseDTOList =
+                    anonymousVoteService.getAnonymousVoteCountByPollId(pollId);
+            return ApiResponse.success("获取投票结果成功", anonymousVoteCountResponseDTOList);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e){
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
 }
