@@ -77,6 +77,8 @@ public class UserService {
         dto.setNickname(user.getNickname());
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
+        dto.setCreateTime(user.getCreateTime());
+        dto.setUpdateTime(user.getUpdateTime());
         dto.setDeleted(user.isDeleted());
         return dto;
     }
@@ -95,5 +97,20 @@ public class UserService {
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ValidationException("用户不存在"));
+    }
+
+    public void forgetPassword(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ValidationException("用户不存在"));
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    public void verifyUser(String username, String email) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ValidationException("用户不存在"));
+        if (!user.getEmail().equals(email)) {
+            throw new ValidationException("邮箱不匹配");
+        }
     }
 }

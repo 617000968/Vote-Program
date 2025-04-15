@@ -2,6 +2,8 @@ package com.liuhuang.voteprogram.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,6 +18,7 @@ import java.util.List;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(value = {"password", "isDeleted", "polls", "vote", "log"}, allowSetters = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,9 +44,11 @@ public class User {
     private boolean isDeleted;
 
     @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     @UpdateTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)

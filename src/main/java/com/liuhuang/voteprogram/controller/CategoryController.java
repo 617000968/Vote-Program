@@ -1,6 +1,7 @@
 package com.liuhuang.voteprogram.controller;
 
 
+import com.liuhuang.voteprogram.dto.CategoryActiveAndCountDTO;
 import com.liuhuang.voteprogram.dto.CategoryDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.response.ApiResponse;
@@ -32,11 +33,12 @@ public class CategoryController {
             return ApiResponse.error(400, "服务器内部错误:" + e.getMessage());
         }
     }
-    @GetMapping("/all")
-    public ApiResponse<List<CategoryDTO>> getAllCategory(){
-        List<CategoryDTO> categories = categoryService.getAllCategory();
+    @GetMapping("/all/detailed")
+    public ApiResponse<List<CategoryActiveAndCountDTO>> getAllDetailedCategory(){
+        List<CategoryActiveAndCountDTO> categories = categoryService.getAllDetailedCategory();
         return ApiResponse.success("获取所有分类成功", categories);
     }
+
 
     @GetMapping("/active")
     private ApiResponse<List<CategoryDTO>> getActiveCategory(){

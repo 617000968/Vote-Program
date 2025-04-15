@@ -147,10 +147,11 @@ public class PollService {
                 .orElseThrow(() -> new ValidationException("投票不存在"));
         List<VoteCountResponseDTO> voteCountResponseDTO = voteRepository.getVoteCountByPoll(polls);
         UserBasicDTO userBasicDTO = new UserBasicDTO(
+                polls.getCreator().getUserId(),
                 polls.getCreator().getUsername(),
                 polls.getCreator().getNickname()
         );
-        CategoryDTO categoryDTO = new CategoryDTO(polls.getCategory().getName());
+        CategoryDTO categoryDTO = new CategoryDTO(polls.getCategory().getCategoryId(), polls.getCategory().getName());
         return new PollWithOptionWithVoteDTO(
                 polls.getPollId(),
                 polls.getTitle(),

@@ -1,6 +1,7 @@
 package com.liuhuang.voteprogram.service;
 
 
+import com.liuhuang.voteprogram.dto.CategoryActiveAndCountDTO;
 import com.liuhuang.voteprogram.dto.CategoryDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.model.Category;
@@ -25,8 +26,8 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public List<CategoryDTO> getAllCategory() {
-        return categoryRepository.getAllCategory();
+    public List<CategoryActiveAndCountDTO> getAllDetailedCategory() {
+        return categoryRepository.getAllDetailedCategory();
     }
 
     public List<CategoryDTO> getActiveCategory() {

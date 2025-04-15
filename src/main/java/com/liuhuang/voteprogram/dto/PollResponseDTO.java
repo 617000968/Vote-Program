@@ -16,11 +16,12 @@ public class PollResponseDTO {
     private LocalDateTime endTime;
     private int maxChoice;
     private LocalDateTime createdAt;
+    private boolean isAnonymous;
     private CategoryDTO categoryDTO;
     private UserBasicDTO userBasicDTO;
     public PollResponseDTO(Long pollId, String title, String description,
                            LocalDateTime startTime, LocalDateTime endTime,
-                           int maxChoice, LocalDateTime createdAt,
+                           int maxChoice, LocalDateTime createdAt, boolean isAnonymous,
                            Category category, User creator) {
         this.pollId = pollId;
         this.title = title;
@@ -29,9 +30,10 @@ public class PollResponseDTO {
         this.endTime = endTime;
         this.maxChoice = maxChoice;
         this.createdAt = createdAt;
+        this.isAnonymous = isAnonymous;
         // 字段赋值
-        this.categoryDTO = new CategoryDTO( category.getName());
-        this.userBasicDTO = new UserBasicDTO(creator.getUsername(), creator.getNickname());
+        this.categoryDTO = new CategoryDTO(category.getCategoryId(), category.getName());
+        this.userBasicDTO = new UserBasicDTO(creator.getUserId(), creator.getUsername(), creator.getNickname());
     }
 }
 

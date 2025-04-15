@@ -35,9 +35,38 @@ public class AuthController {
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());
         } catch (Exception e){
-            return ApiResponse.error(500, "服务器内部错误" + e.getMessage());
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
         }
     }
+
+
+    @PostMapping("/verifyUser")
+    public ApiResponse<String> verifyUser(@RequestParam("username") String username,
+                                         @RequestParam("email") String email){
+        try {
+            userService.verifyUser(username, email);
+            return ApiResponse.success("验证成功", "");
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e){
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
+
+    @PostMapping("/forgetPassword")
+    public ApiResponse<String> forgetPassword(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password){
+        try {
+            userService.forgetPassword(username, password);
+            return ApiResponse.success("发送成功", "");
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e){
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
+
 
     @PostMapping("/register")
     public ApiResponse<User> register(@RequestBody @Valid UserRegisterDTO dto){

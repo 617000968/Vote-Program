@@ -1,6 +1,7 @@
 package com.liuhuang.voteprogram.repository;
 
 
+import com.liuhuang.voteprogram.dto.CategoryActiveAndCountDTO;
 import com.liuhuang.voteprogram.dto.CategoryDTO;
 import com.liuhuang.voteprogram.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,15 +16,16 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
 
     @Query("SELECT new com.liuhuang.voteprogram.dto.CategoryDTO(" +
-            "c.name)" +
-            "FROM Category c")
-    List<CategoryDTO> getAllCategory();
-
-    @Query("SELECT new com.liuhuang.voteprogram.dto.CategoryDTO(" +
-            "c.name)" +
+            "c.categoryId, c.name)" +
             "FROM Category c " +
             "WHERE c.active = true")
     List<CategoryDTO> getActiveCategory();
 
-
+    @Query("SELECT new com.liuhuang.voteprogram.dto.CategoryActiveAndCountDTO(" +
+            "c.categoryId, c.name, c.active, COUNT(p)) " +
+            "FROM Category c " +
+            "LEFT JOIN c.polls p " +
+            "on p.isDeleted = false " +
+            "GROUP BY c.categoryId, c.name, c.active ")
+    List<CategoryActiveAndCountDTO> getAllDetailedCategory();
 }

@@ -20,7 +20,7 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
     Optional<Polls> findByActiveTitle(String title);
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
-            "p.maxChoice, p.createdAt, c, u) " +
+            "p.maxChoice, p.createdAt, p.isAnonymous, c, u) " +
             "FROM Polls p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.creator u " +
@@ -38,7 +38,7 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
 
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
-            "p.maxChoice, p.createdAt, c, u) " +
+            "p.maxChoice, p.createdAt, p.isAnonymous, c, u) " +
             "FROM Polls p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.creator u " +
@@ -55,7 +55,7 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
 
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime," +
-            "p.maxChoice, p.createdAt, c, u)" +
+            "p.maxChoice, p.createdAt, p.isAnonymous, c, u)" +
             "FROM Polls p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.creator u " +
@@ -65,17 +65,17 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
 
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime," +
-            "p.maxChoice, p.createdAt, c, u)" +
+            "p.maxChoice, p.createdAt, p.isAnonymous, c, u)" +
             "FROM Polls p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.creator u " +
-            "WHERE p.isDeleted = false AND p.category = :category")
+            "WHERE p.isDeleted = false AND p.category = :category AND p.isDeleted = false ")
     List<PollResponseDTO> findByCategory(Category category);
 
 
     @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollResponseDTO(" +
             "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
-            "p.maxChoice, p.createdAt, c, u ) " +
+            "p.maxChoice, p.createdAt, p.isAnonymous, c, u ) " +
             "FROM Polls p " +
             "LEFT JOIN p.category c " +
             "LEFT JOIN p.creator u " +
