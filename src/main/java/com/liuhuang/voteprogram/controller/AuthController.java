@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -99,6 +100,17 @@ public class AuthController {
             User user = userService.delete(id);
             UserResponseDTO responseDTO = userService.toDTO(user);
             return ApiResponse.success("删除成功", responseDTO);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e){
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ApiResponse<List<UserResponseDTO>> getAllUsers(){
+        try {
+            return ApiResponse.success("获取成功", userService.getAllUsers());
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());
         } catch (Exception e){

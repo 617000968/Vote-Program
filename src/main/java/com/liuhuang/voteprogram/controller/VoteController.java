@@ -28,6 +28,7 @@ public class VoteController {
     @PostMapping("/create")
     public ApiResponse<List<VoteResponseDTO>> createVote(@RequestBody @Valid VoteCreateDTO dto) {
         try {
+            System.out.println(dto);
             List<VoteResponseDTO> vote = voteService.createVote(dto);
             return ApiResponse.success("投票成功", vote);
         } catch (ValidationException e) {
@@ -47,5 +48,24 @@ public class VoteController {
         } catch (Exception e){
             return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
         }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<VoteResponseDTO>> getVoteByUserId(@PathVariable Long userId) {
+        try {
+            List<VoteResponseDTO> vote = voteService.getVoteByUserId(userId);
+            return ApiResponse.success("获取投票记录成功", vote);
+        } catch (ValidationException e) {
+            return ApiResponse.error(400, e.getMessage());
+        } catch (Exception e){
+            return ApiResponse.error(400, "服务器内部错误" + e.getMessage());
+        }
+    }
+
+    @GetMapping("/exists")
+    public ApiResponse<Boolean> hasVoted(@RequestParam Long optionId,
+                                         @RequestParam Long userId) {
+        boolean voted = voteService.hasVoted(optionId, userId);
+        return ApiResponse.success("获取投票记录成功", voted);
     }
 }

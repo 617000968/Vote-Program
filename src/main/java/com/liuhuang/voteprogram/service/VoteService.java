@@ -10,7 +10,10 @@ import com.liuhuang.voteprogram.model.User;
 import com.liuhuang.voteprogram.model.Votes;
 import com.liuhuang.voteprogram.repository.PollRepository;
 import com.liuhuang.voteprogram.repository.VoteRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class VoteService {
     }
 
 
+    @CacheEvict(value = "voteCount", key = "#dto.pollId")
     public List<VoteResponseDTO> createVote(VoteCreateDTO dto) {
         Polls polls = pollService.getPollsByPollId(dto.getPollId());
         User user = userService.getUserById(dto.getUserId());
@@ -71,8 +75,24 @@ public class VoteService {
         return responseDTOS;
     }
 
+    @Cacheable(value = "voteCount", key = "#pollId")
     public List<VoteCountResponseDTO> getVoteCountByPollId(Long pollId) {
+        String redisKey = "voteCount:poll:" + pollId;
+
         Polls polls = pollService.getPollsByPollId(pollId);
         return voteRepository.getVoteCountByPoll(polls);
+    }
+
+    @Cacheable(value = "userVotes", key = "#userId")
+    @Transactional(readOnly = true)
+    public List<VoteResponseDTO> getVoteByUserId(Long userId) {
+        return voteRepository.findVoteByUserId(userId);
+
+    }
+
+    public boolean hasVoted(Long optionId, Long userId) {
+        User user = userService.getUserById(userId);
+        Options options = optionService.getOptionById(optionId);
+        return voteRepository.existsByUserAndOption(user, options);
     }
 }

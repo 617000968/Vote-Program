@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -25,7 +26,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User login(UserLoginDTO dto) {
         User user = userRepository.findByUsername(dto.getUsername()).orElseThrow(() -> new ValidationException("用户名或密码错误"));
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()) || user.isDeleted()) {
             throw new ValidationException("用户名或密码错误");
         }
         return user;
@@ -112,5 +113,11 @@ public class UserService {
         if (!user.getEmail().equals(email)) {
             throw new ValidationException("邮箱不匹配");
         }
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
     }
 }

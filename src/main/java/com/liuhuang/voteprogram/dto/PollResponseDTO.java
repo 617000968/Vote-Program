@@ -5,10 +5,14 @@ import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.model.User;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class PollResponseDTO {
+public class PollResponseDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private Long pollId;
     private String title;
     private String description;

@@ -1,11 +1,13 @@
 package com.liuhuang.voteprogram.controller;
 
 
-import com.liuhuang.voteprogram.dto.PollCreateAndUpdateDTO;
+import com.liuhuang.voteprogram.dto.PollCreateDTO;
 import com.liuhuang.voteprogram.dto.PollResponseDTO;
+import com.liuhuang.voteprogram.dto.PollUpdateDTO;
 import com.liuhuang.voteprogram.dto.PollWithOptionWithVoteDTO;
 import com.liuhuang.voteprogram.response.ApiResponse;
 import com.liuhuang.voteprogram.service.PollService;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +27,13 @@ public class PollController {
     }
 
     @PostMapping("/create")
-    public ApiResponse<PollCreateAndUpdateDTO> createPoll(@RequestBody @Valid PollCreateAndUpdateDTO dto) {
+    public ApiResponse<PollCreateDTO> createPoll(@RequestBody @Valid PollCreateDTO dto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            return ApiResponse.error(400, errorMessage);
+        }
         try {
-            PollCreateAndUpdateDTO polls =  pollService.createPoll(dto);
+            PollCreateDTO polls =  pollService.createPoll(dto);
             return ApiResponse.success("投票创建成功", polls);
         } catch (com.liuhuang.voteprogram.exception.ValidationException e){
             return ApiResponse.error(400, e.getMessage());
@@ -67,20 +73,27 @@ public class PollController {
     }
 
     @GetMapping("/detailed/{pollId}")
-    public ApiResponse<PollWithOptionWithVoteDTO> getDetailedPoll(@PathVariable Long pollId) {
-        PollWithOptionWithVoteDTO detailedPoll = pollService.getDetailedPoll(pollId);
+    public ApiResponse<PollWithOptionWithVoteDTO> getDetailedPoll(@PathVariable Long pollId, @RequestParam Long userId) {
+        PollWithOptionWithVoteDTO detailedPoll = pollService.getDetailedPoll(pollId, userId);
         return ApiResponse.success("获取详细投票成功", detailedPoll);
     }
 
+    @GetMapping("/anonymous/{anonymousCode}")
+    public ApiResponse<PollWithOptionWithVoteDTO> getAnonymousPoll(@PathVariable String anonymousCode) {
+        System.out.println(anonymousCode);
+        PollWithOptionWithVoteDTO anonymousPoll = pollService.getAnonymousPoll(anonymousCode);
+        return ApiResponse.success("获取匿名投票成功", anonymousPoll);
+    }
+
     @PatchMapping("/update/{pollId}")
-    public ApiResponse<PollCreateAndUpdateDTO> updatePoll(@PathVariable Long pollId,
-                                     @RequestBody PollCreateAndUpdateDTO dto
+    public ApiResponse<PollUpdateDTO> updatePoll(@PathVariable Long pollId,
+                                                 @RequestBody PollUpdateDTO dto
             /*Authentication authentication **/){
         try {
 //            if (authentication == null) {
 //                return ApiResponse.error(401, "未登录");
 //            }
-            PollCreateAndUpdateDTO updatePoll = pollService.updatePolls(pollId, dto);
+            PollUpdateDTO updatePoll = pollService.updatePolls(pollId, dto);
             return ApiResponse.success("更新投票成功", updatePoll);
         } catch (com.liuhuang.voteprogram.exception.ValidationException e) {
             return ApiResponse.error(400, e.getMessage());

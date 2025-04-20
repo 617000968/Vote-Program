@@ -1,6 +1,8 @@
 package com.liuhuang.voteprogram.repository;
 
 import com.liuhuang.voteprogram.dto.VoteCountResponseDTO;
+import com.liuhuang.voteprogram.dto.VoteResponseDTO;
+import com.liuhuang.voteprogram.model.Options;
 import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.model.User;
 import com.liuhuang.voteprogram.model.Votes;
@@ -25,4 +27,12 @@ public interface VoteRepository extends JpaRepository<Votes, Long> {
     List<VoteCountResponseDTO> getVoteCountByPoll(@Param("polls") Polls polls);
 
 
+
+    boolean existsByUserAndOption(User user, Options option);
+
+    @Query("SELECT new com.liuhuang.voteprogram.dto.VoteResponseDTO( " +
+            "v.user.username, v.poll.title, v.option.optionText) " +
+            "FROM Votes v " +
+            "WHERE v.user.userId = :userId ")
+    List<VoteResponseDTO> findVoteByUserId(Long userId);
 }

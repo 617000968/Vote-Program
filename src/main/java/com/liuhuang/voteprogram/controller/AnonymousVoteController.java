@@ -25,10 +25,10 @@ public class AnonymousVoteController {
     @PostMapping("/create")
     public ApiResponse<String> createAnonymousVote(
             @RequestHeader("Device-Hash") String deviceHash,
-            @RequestHeader("Token") String token,
             @RequestBody @Valid AnonymousVoteCreateDTO dto) {
         try {
-            anonymousVoteService.createAnonymousVote(dto, deviceHash, token);
+            System.out.println(dto + deviceHash);
+            anonymousVoteService.createAnonymousVote(dto, deviceHash);
             return ApiResponse.success("投票成功", null);
         } catch (ValidationException e) {
             return ApiResponse.error(400, e.getMessage());

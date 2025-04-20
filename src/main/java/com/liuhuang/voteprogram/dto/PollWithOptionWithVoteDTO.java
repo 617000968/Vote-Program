@@ -15,14 +15,17 @@ public class PollWithOptionWithVoteDTO {
     private LocalDateTime endTime;
     private int maxChoice;
     private LocalDateTime createdAt;
+    private boolean voted;
+    private boolean isAnonymous;
     private CategoryDTO categoryDTO;
     private UserBasicDTO userBasicDTO;
     private List<VoteCountResponseDTO> voteCountResponseDTO;
 
     public PollWithOptionWithVoteDTO(Long pollId, String title, String description,
                                      LocalDateTime startTime, LocalDateTime endTime,
-                                     int maxChoice, LocalDateTime createdAt,
-                                     CategoryDTO categoryDTO, UserBasicDTO userBasicDTO,
+                                     int maxChoice, LocalDateTime createdAt,boolean voted,
+                                     boolean isAnonymous, CategoryDTO categoryDTO,
+                                     UserBasicDTO userBasicDTO,
                                      List<VoteCountResponseDTO> voteCountResponseDTO) {
         this.pollId = pollId;
         this.title = title;
@@ -31,6 +34,8 @@ public class PollWithOptionWithVoteDTO {
         this.endTime = endTime;
         this.maxChoice = maxChoice;
         this.createdAt = createdAt;
+        this.voted = voted;
+        this.isAnonymous = isAnonymous;
         this.categoryDTO = categoryDTO;
         this.userBasicDTO = userBasicDTO;
         this.voteCountResponseDTO = voteCountResponseDTO;

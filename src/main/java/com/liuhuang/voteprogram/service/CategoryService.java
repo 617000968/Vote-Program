@@ -6,6 +6,8 @@ import com.liuhuang.voteprogram.dto.CategoryDTO;
 import com.liuhuang.voteprogram.exception.ValidationException;
 import com.liuhuang.voteprogram.model.Category;
 import com.liuhuang.voteprogram.repository.CategoryRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +28,12 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Cacheable(value = "allDetailedCategory")
     public List<CategoryActiveAndCountDTO> getAllDetailedCategory() {
         return categoryRepository.getAllDetailedCategory();
     }
 
+    @Cacheable(value = "activeCategory")
     public List<CategoryDTO> getActiveCategory() {
         return categoryRepository.getActiveCategory();
     }
@@ -38,6 +42,7 @@ public class CategoryService {
         categoryRepository.deleteById(categoryId);
     }
 
+    @CacheEvict(value = {"activeCategory", "allDetailedCategory"}, allEntries = true)
     public void updateCategoryStatus(int id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ValidationException("分类不存在"));
         category.setActive(!category.isActive());

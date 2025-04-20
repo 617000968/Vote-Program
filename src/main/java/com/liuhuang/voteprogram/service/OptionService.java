@@ -8,6 +8,8 @@ import com.liuhuang.voteprogram.model.Polls;
 import com.liuhuang.voteprogram.repository.OptionRepository;
 import com.liuhuang.voteprogram.repository.PollRepository;
 import com.liuhuang.voteprogram.repository.VoteRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class OptionService {
     }
 
 
+    @CacheEvict(value = "pollOptions", key = "#dto.pollId")
     public OptionResponseDTO createOption(OptionResponseDTO dto) {
         existPoll(dto);
         Options options = new Options();
@@ -76,6 +79,7 @@ public class OptionService {
     }
 
 
+    @Cacheable(value = "pollOptions", key = "#pollId", unless = "#result.isEmpty()")
     public List<OptionResponseDTO> getPollOptions(Long pollId) {
         Polls polls = pollRepository.findById(pollId)
                 .orElseThrow(() -> new ValidationException("投票不存在"));

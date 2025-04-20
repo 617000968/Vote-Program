@@ -50,6 +50,9 @@ public class Polls {
     @Column(nullable = false, name = "is_anonymous")
     private boolean isAnonymous;
 
+    @Column(name = "anonymous_code")
+    private String anonymousCode;
+
     @OneToMany(mappedBy = "poll", fetch = FetchType.LAZY)
     @JsonBackReference("option-poll")
     private List<Options> options;

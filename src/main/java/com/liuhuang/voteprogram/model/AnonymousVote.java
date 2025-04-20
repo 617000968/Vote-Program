@@ -19,9 +19,6 @@ public class AnonymousVote {
     @Column(nullable = false, name = "device_hash")
     private String deviceHash;
 
-    @Column(nullable = false, name = "token")
-    private String token;
-
     @Column(nullable = false, name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

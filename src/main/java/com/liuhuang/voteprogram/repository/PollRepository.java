@@ -82,6 +82,11 @@ public interface PollRepository extends JpaRepository<Polls, Long> {
             "WHERE p.isDeleted = false AND p.pollId = :pollId")
     PollResponseDTO findPollBasicInfoByPollId(Long pollId);
 
+    boolean existsByAnonymousCode(String anonymousCode);
+
+    Optional<Polls> findByAnonymousCode(String anonymousCode);
+
+
 //    @Query("SELECT NEW com.liuhuang.voteprogram.dto.PollWithOptionsDTO(" +
 //            "p.pollId, p.title, p.description, p.startTime, p.endTime, " +
 //            "p.maxChoice, p.createdAt, c, u, o ) " +

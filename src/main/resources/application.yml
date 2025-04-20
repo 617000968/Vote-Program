@@ -12,6 +12,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 3000
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
 
 server:
   port: 8080
@@ -23,6 +34,4 @@ logging:
 
 jwt:
   secret: jWT6jV9qyT3Qx#pLmZgXn2r5u8x/A?D(G+KbPeShVkYp3s6v9y$B&E)H@McQfTjWn
-  expiration: 900000
-  refresh-expiration: 604800000
 
